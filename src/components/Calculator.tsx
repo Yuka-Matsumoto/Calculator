@@ -1,10 +1,9 @@
 'use client'; // クライアントコンポーネント
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function Calculator() {
   const [input, setInput] = useState(''); // 入力値
-  const [result, setResult] = useState(''); // 計算結果
 
   // 数値と演算子を入力
   const handleInput = (value: string) => {
@@ -14,18 +13,24 @@ export default function Calculator() {
   // 計算結果を表示
   const handleCalculate = () => {
     try {
-      // 四則演算、べき乗、平方根、剰余をevalで処理
-      const res = eval(input.replace('^', '**').replace('√', 'Math.sqrt'));
-      setResult(res.toString());
+      const sqrtMatch = input.match(/√(\d+)/);
+      let expression = input;
+
+      if (sqrtMatch) {
+        const sqrtValue = Math.sqrt(Number(sqrtMatch[1]));
+        expression = input.replace(`√${sqrtMatch[1]}`, sqrtValue.toString());
+      }
+
+      const res = eval(expression.replace('^', '**'));
+      setInput(res.toString());
     } catch (err) {
-      setResult('Error');
+      setInput('Error');
     }
   };
 
   // 入力クリア
   const handleClear = () => {
     setInput('');
-    setResult('');
   };
 
   return (
@@ -34,10 +39,9 @@ export default function Calculator() {
         <input
           type="text"
           className="input p-2 border"
-          value={input}
+          value={input}  // 計算結果もここに表示
           readOnly
         />
-        <div className="result p-2">{result}</div>
       </div>
       <div className="buttons grid grid-cols-4 gap-2">
         {['7', '8', '9', '/'].map((btn) => (

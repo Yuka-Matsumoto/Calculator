@@ -1,3 +1,4 @@
+import React from 'react';  // Reactのインポートが必要
 import { render, fireEvent } from '@testing-library/react';
 import Calculator from '../components/Calculator';
 
